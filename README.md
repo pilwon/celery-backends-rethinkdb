@@ -10,12 +10,12 @@ The task meta data can be kept in a RethinKDB table.
 
 ## Usage
 
-1. Copy [rethinkdb.py](https://github.com/pilwon/celery-backends-rethinkdb/blob/master/rethinkdb.py) to your Celery project.
+1. Copy [rethinkdb_backend.py](https://github.com/pilwon/celery-backends-rethinkdb/blob/master/rethinkdb_backend.py) to your Celery project.
 
 2. Add the following to `celeryconfig.py`.
 
 ```
-CELERY_RESULT_BACKEND = '<__name__ of rethinkdb.py from #1>:RethinkBackend'
+CELERY_RESULT_BACKEND = '<__name__ of rethinkdb_backend.py from #1>:RethinkBackend'
 
 CELERY_RETHINKDB_BACKEND_SETTINGS = {
     # 'host': '127.0.0.1',
