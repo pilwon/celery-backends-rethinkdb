@@ -112,11 +112,11 @@ class RethinkBackend(BaseBackend):
                     self.current_task_children(request),
                 ))}
 
-        result = self.table.insert(meta, return_vals=True).run(self.conn)
-        if 'first_error' in result:
+        result = self.table.insert(meta, conflict='replace').run(self.conn)
+        if result['errors']:
             raise Exception(result['first_error'])
 
-        return result['new_val']
+        return meta
 
     def _get_task_meta_for(self, task_id):
         """Get task metadata for a task by id."""
@@ -142,11 +142,11 @@ class RethinkBackend(BaseBackend):
                 'result': json.loads(self.encode(result)),
                 'date_done': r.now()}
 
-        result = self.table.insert(meta, return_vals=True).run(self.conn)
-        if 'first_error' in result:
+        result = self.table.insert(meta, conflict='replace').run(self.conn)
+        if result['errors']:
             raise Exception(result['first_error'])
 
-        return result['new_val']
+        return meta
 
     def _restore_group(self, group_id):
         """Get the result for a group by id."""
@@ -165,7 +165,7 @@ class RethinkBackend(BaseBackend):
     def _delete_group(self, group_id):
         """Delete a group by id."""
         result = self.table.get(group_id).delete().run(self.conn)
-        if 'first_error' in result:
+        if result['errors']:
             raise Exception(result['first_error'])
 
     def _forget(self, task_id):
@@ -179,7 +179,7 @@ class RethinkBackend(BaseBackend):
         # the server.  Likewise, it will raise an OperationsError if the
         # response was unable to be completed.
         result = self.table.get(task_id).delete().run(self.conn)
-        if 'first_error' in result:
+        if result['errors']:
             raise Exception(result['first_error'])
 
     def cleanup(self):
@@ -187,7 +187,7 @@ class RethinkBackend(BaseBackend):
         result = self.table.filter(r.row['date_done'].lt(
             self.app.now() - self.expires
         )).delete().run(self.conn)
-        if 'first_error' in result:
+        if result['errors']:
             raise Exception(result['first_error'])
 
     def __reduce__(self, args=(), kwargs={}):
