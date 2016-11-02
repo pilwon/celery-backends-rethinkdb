@@ -193,7 +193,7 @@ class RethinkBackend(BaseBackend):
     def __reduce__(self, args=(), kwargs={}):
         kwargs.update(
             dict(expires=self.expires))
-        return super(RethinkBackendRethinkBackend, self).__reduce__(args, kwargs)
+        return super(RethinkBackend, self).__reduce__(args, kwargs)
 
     @cached_property
     def conn(self):
